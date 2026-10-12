@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rainbow Hub 🌈</title>
+<style>
+/* ===== إعادة تعيين ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+
+/* ===== الألوان الافتراضية (الوضع الداكن) ===== */
+:root {
+    --bg: #4A4A4A;
+    --card: #2B2B2B;
+    --card-alt: #252525;
+    --frame: #3A3A3A;
+    --accent: #FFC107;
+    --text: #FFFFFF;
+    --text-dim: #AAAAAA;
+    --border: #555555;
+}
+
+/* ===== الوضع النهاري ===== */
+body.light {
+    --bg: #F0F0F0;
+    --card: #FFFFFF;
+    --card-alt: #F5F5F5;
+    --frame: #E0E0E0;
+    --text: #1A1A1A;
+    --text-dim: #666666;
+    --border: #CCCCCC;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    transition: background 0.3s, color 0.3s;
+    direction: rtl;
+}
+
+/* ===== الشريط العلوي ===== */
+.top-bar {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 8px;
+}
+
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.icon-btn:hover {
+    background: var(--frame);
+    transform: scale(1.08);
+}
+
+.icon-btn.active {
+    background: var(--accent);
+    color: #000;
+}
+
+/* ===== شريط المستوى ===== */
+.info-bar {
+    width: 100%;
+    max-width: 500px;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 8px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+#level-text { color: var(--accent); }
+#coins-text { color: #FFC107; }
+
+body.light #coins-text { color: #F57C00; }
+
+.progress-bar {
+    background: var(--frame);
+    height: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.xp-text {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 5px;
+}
+
+/* ===== الحاوية الرئيسية ===== */
+#app {
+    width: 100%;
+    max-width: 500px;
+    flex: 1;
+}
+
+/* ===== الصفحات ===== */
+.page {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== الأيقونة الرئيسية ===== */
+.main-icon {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    cursor: pointer;
+}
+
+.icon-circle {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #FF0000 0deg 45deg,
+        #FF7F00 45deg 90deg,
+        #FFFF00 90deg 135deg,
+        #00FF00 135deg 180deg,
+        #00FFFF 180deg 225deg,
+        #0000FF 225deg 270deg,
+        #4B0082 270deg 315deg,
+        #9400D3 315deg 360deg
+    );
+    position: relative;
+    transition: transform 0.5s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.icon-circle:hover {
+    transform: rotate(15deg) scale(1.05);
+}
+
+.icon-circle::after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* ===== عنوان التطبيق ===== */
+.app-title {
+    text-align: center;
+    font-size: 28px;
+    margin: 10px 0 20px;
+    color: var(--text);
+    font-weight: bold;
+}
+
+/* ===== شبكة الأزرار ===== */
+.buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 10px;
+}
+
+.action-btn {
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}
+
+.action-btn.orange { background: #FF9800; }
+.action-btn.pink { background: #E91E63; }
+.action-btn.purple { background: #9C27B0; }
+.action-btn.blue { background: #2196F3; }
+.action-btn.red { background: #F44336; }
+.action-btn.yellow { background: #FFC107; color: #000; }
+.action-btn.cyan { background: #00BCD4; }
+.action-btn.gold { background: linear-gradient(135deg, #FFC107, #FF9800); color: #000; }
+
+.action-btn.small {
+    padding: 10px 20px;
+    font-size: 13px;
+    margin: 15px auto;
+    display: block;
+    width: fit-content;
+}
+
+.back-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    margin: 8px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.back-btn:hover {
+    background: var(--frame);
+}
+
+/* ===== العناوين ===== */
+.page-title {
+    text-align: center;
+    font-size: 22px;
+    margin: 10px 0 20px;
+    color: var(--text);
+    font-weight: bold;
+}
+
+.orange-title { color: #FF9800; }
+.pink-title { color: #E91E63; }
+.purple-title { color: #9C27B0; }
+.blue-title { color: #2196F3; }
+.red-title { color: #F44336; }
+.yellow-title { color: #FFC107; }
+.cyan-title { color: #00BCD4; }
+.gold-title { color: #FFC107; }
+
+/* ===== البطاقات ===== */
+.card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 15px;
+    margin: 10px 0;
+    color: var(--text);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+/* ===== قائمة الألعاب ===== */
+.games-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.game-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.2s;
+    color: var(--text);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.game-card:hover {
+    transform: translateY(-2px);
+}
+
+.game-icon {
+    font-size: 32px;
+}
+
+.game-info {
+    flex: 1;
+    text-align: right;
+}
+
+.game-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 3px;
+    color: var(--text);
+}
+
+.game-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+}
+
+.play-btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 10px;
+    background: #4CAF50;
+    color: #FFFFFF;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.play-btn:hover {
+    background: #45A049;
+}
+
+/* ===== لعبة تخمين الرقم ===== */
+.game-container {
+    background: var(--card);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    color: var(--text);
+    box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+}
+
+.game-title {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: var(--text);
+}
+
+.game-subtitle {
+    color: var(--text-dim);
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.guess-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: var(--frame);
+    color: var(--text);
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.guess-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.guess-btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 10px;
+    background: #2196F3;
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.guess-btn:hover {
+    background: #1976D2;
+}
+
+.guess-result {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 15px 0;
+    min-height: 24px;
+    color: var(--text);
+}
+
+.attempts-text {
+    color: var(--text-dim);
+    font-size: 12px;
+}
+
+/* ===== التبويبات ===== */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin: 10px 0;
+    justify-content: center;
+}
+
+.tab {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.tab.active {
+    background: #2196F3;
+    color: #FFFFFF;
+}
+
+/* ===== منطقة التمرير ===== */
+.scroll-area {
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.scroll-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scroll-area::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 10px;
+}
+
+/* ===== بطاقات المتجر ===== */
+.shop-item {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    color: var(--text);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.shop-preview {
+    width: 55px;
+    height: 55px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: var(--frame);
+}
+
+.shop-info {
+    flex: 1;
+    text-align: right;
+}
+
+.shop-name {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 3px;
+    color: var(--text);
+}
+
+.shop-price {
+    color: #FFC107;
+    font-size: 12px;
+}
+
+body.light .shop-price { color: #F57C00; }
+
+.shop-action {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    color: #FFFFFF;
+}
+
+.shop-action.buy { background: #FF9800; }
+.shop-action.activate { background: #2196F3; }
+.shop-action.active { background: #4CAF50; cursor: default; }
+
+/* ===== لوحة المتصدرين ===== */
+.leaderboard-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 80px 140px;
+    padding: 10px;
+    background: var(--card);
+    border-radius: 8px;
+    margin-bottom: 5px;
+    font-size: 12px;
+    align-items: center;
+    color: var(--text);
+}
+
+.leaderboard-row:nth-child(even) {
+    background: var(--card-alt);
+}
+
+.leaderboard-row.header {
+    background: #2196F3;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+.rank-medal {
+    font-size: 18px;
+    text-align: center;
+}
+
+/* ===== الرسم البياني ===== */
+.chart {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 180px;
+    padding: 10px;
+    background: var(--frame);
+    border-radius: 10px;
+    margin: 10px 0;
+    position: relative;
+}
+
+.chart-bar {
+    flex: 1;
+    max-width: 40px;
+    background: var(--accent);
+    border-radius: 5px 5px 0 0;
+    margin: 0 3px;
+    position: relative;
+    transition: height 0.5s ease;
+    min-height: 3px;
+}
+
+.chart-bar-label {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+.chart-bar-value {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--text);
+}
+
+/* ===== الصناديق ===== */
+.chest-display {
+    text-align: center;
+    font-size: 100px;
+    margin: 30px 0;
+    transition: transform 0.2s;
+    cursor: pointer;
+    user-select: none;
+}
+
+.chest-display.shaking {
+    animation: shake 0.3s infinite;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0) rotate(0); }
+    25% { transform: translateX(-10px) rotate(-5deg); }
+    75% { transform: translateX(10px) rotate(5deg); }
+}
+
+/* ===== النافذة المنبثقة ===== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-box {
+    background: var(--card);
+    border-radius: 15px;
+    padding: 25px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    color: var(--text);
+    animation: popIn 0.3s ease;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-box h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: var(--text);
+}
+
+.modal-box p {
+    margin-bottom: 20px;
+    color: var(--text-dim);
+}
+
+.modal-box input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: var(--frame);
+    color: var(--text);
+    font-size: 15px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.modal-box input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 5px;
+    color: #FFFFFF;
+    font-size: 14px;
+}
+
+.modal-btn.confirm { background: #4CAF50; }
+.modal-btn.cancel { background: #F44336; }
+
+/* ===== الإشعار ===== */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--card);
+    color: var(--text);
+    padding: 12px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 2000;
+    font-weight: bold;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* ===== الجداول ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text);
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+}
+
+th {
+    background: #2196F3;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+/* ===== استجابة للشاشات الصغيرة ===== */
+@media (max-width: 500px) {
+    .icon-circle { width: 150px; height: 150px; }
+    .app-title { font-size: 24px; }
+    .action-btn { font-size: 12px; padding: 12px; }
+    .leaderboard-row { font-size: 10px; grid-template-columns: 35px 1fr 60px 100px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== الشريط العلوي ===== -->
+<header class="top-bar">
+    <button id="theme-btn" class="icon-btn" title="الوضع الليلي/النهاري">🌙</button>
+    <button id="sound-btn" class="icon-btn" title="الصوت">🔊</button>
+    <button id="music-btn" class="icon-btn" title="الموسيقى">🎵</button>
+    <button id="profile-btn" class="icon-btn" title="الملف الشخصي">👤</button>
+</header>
+
+<!-- ===== شريط المستوى ===== -->
+<div class="info-bar">
+    <div class="info-row">
+        <span id="level-text">⭐ المستوى 1</span>
+        <span id="coins-text">💰 500</span>
+    </div>
+    <div class="progress-bar">
+        <div id="xp-progress" class="progress-fill"></div>
+    </div>
+    <div id="xp-text" class="xp-text">0 / 100 XP</div>
+</div>
+
+<!-- ===== المحتوى الرئيسي ===== -->
+<main id="app">
+
+    <!-- الصفحة الرئيسية -->
+    <section id="page-home" class="page active">
+        <div class="main-icon" onclick="navigateTo('games')">
+            <div class="icon-circle"></div>
+        </div>
+        <h1 class="app-title">Rainbow Hub 🌈</h1>
+
+        <div class="buttons-grid">
+            <button class="action-btn orange" onclick="navigateTo('daily')">📅 التحدي اليومي</button>
+            <button class="action-btn pink" onclick="navigateTo('chest')">🎁 الصندوق</button>
+            <button class="action-btn purple" onclick="navigateTo('shop')">🛒 المتجر</button>
+            <button class="action-btn blue" onclick="navigateTo('friends')">👥 الأصدقاء</button>
+            <button class="action-btn red" onclick="navigateTo('battle')">⚔️ تحدي 1v1</button>
+            <button class="action-btn yellow" onclick="navigateTo('season')">🏅 الموسم</button>
+            <button class="action-btn cyan" onclick="navigateTo('stats')">📈 إحصائياتي</button>
+            <button class="action-btn gold" onclick="navigateTo('leaderboard')">🏆 المتصدرين</button>
+        </div>
+    </section>
+
+    <!-- صفحة الألعاب -->
+    <section id="page-games" class="page">
+        <button class="back-btn" onclick="navigateTo('home')">⬅ رجوع</button>
+        <h2 class="page-title">🎮 اختر لعبة</h2>
+        <div class="games-list">
+            <div class="game-card">
+                <span class="game-icon">🎯</span>
+                <div class="game-info">
+                    <div class="game-name">تخمين الرقم</div>
+                    <div class="game-desc">خمن الرقم السري بين 1 و 100</div>
+                </div>
+                <button class="play-btn" onclick="startNumberGuess(false)">العب</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- صفحة اللعبة -->
+    <section id="page-game" class="page">
+        <button class="back-btn" onclick="navigateTo('games')">⬅ رجوع</button>
+        <div id="game-container"></div>
+    </section>
+
+    <!-- صفحة التحدي اليومي -->
+    <section id="page-daily" class="page">
+        <button class="back-btn" onclick="navigateTo('home')">⬅ رجوع</button>
+        <h2 class="page-title orange-title">📅 التحدي اليومي</h2>
+        <div class="card" id="daily-content"></div>
+    </section>
+
+    <!-- صفحة الصندوق -->
+    <section id="page-chest" class="page">
+        <button class="back-btn" onclick="navigateTo('home')">⬅ رجوع</button>
+        <h2 class="page-title pink-title">🎁 صندوق المكافآت</h2>
+        <div id="chest-content"></div>
+    </section>
+
+    <!-- صفحة المتجر -->
+    <section id="page-shop" class="page">
+        <button class="back-btn" onclick="navigateTo('home')">⬅ رجوع</button>
+        <h2 class="page-title purple-title">🛒 المتجر</h2>
+        <div id="shop-content"></div>
+    </section>
+
+    <!-- صفحة الأصدقاء -->
+    <section id="page-friends" class="page">
+        <button class="back-btn" onclick="navigateTo('home')">⬅ رجوع</button>
+        <h2 class="page-title blue-title">👥 الأصدقاء</h2>
+        <div id="friends-content"></div>
+    </section>
+
+    <!-- صفحة تحدي 1v1 -->
+    <section id="page-battle" class="page">
+        <button class="back-btn" onclick="navigateTo('home')">⬅ رجوع</button>
+        <h2 class="page-title red-title">⚔️ تحدي 1v1</h2>
+        <div id="battle-content"></div>
+    </section>
+
+    <!-- صفحة الموسم -->
+    <section id="page-season" class="page">
+        <button class="back-btn" onclick="navigateTo('home')">⬅ رجوع</button>
+        <h2 class="page-title yellow-title">🏅 الموسم الشهري</h2>
+        <div id="season-content"></div>
+    </section>
+
+    <!-- صفحة الإحصائيات -->
+    <section id="page-stats" class="page">
+        <button class="back-btn" onclick="navigateTo('home')">⬅ رجوع</button>
+        <h2 class="page-title cyan-title">📈 إحصائياتي</h2>
+        <div id="stats-content"></div>
+    </section>
+
+    <!-- صفحة لوحة المتصدرين -->
+    <section id="page-leaderboard" class="page">
+        <button class="back-btn" onclick="navigateTo('home')">⬅ رجوع</button>
+        <h2 class="page-title gold-title">🏆 لوحة المتصدرين</h2>
+        <div id="leaderboard-content" class="scroll-area"></div>
+    </section>
+
+    <!-- صفحة الملف الشخصي -->
+    <section id="page-profile" class="page">
+        <button class="back-btn" onclick="navigateTo('home')">⬅ رجوع</button>
+        <h2 class="page-title">👤 الملف الشخصي</h2>
+        <div id="profile-content"></div>
+    </section>
+
+</main>
+
+<!-- ===== نافذة منبثقة ===== -->
+<div id="modal" class="modal">
+    <div class="modal-box">
+        <h3 id="modal-title"></h3>
+        <div id="modal-body"></div>
+        <div id="modal-buttons"></div>
+    </div>
+</div>
+
+<!-- ===== إشعار ===== -->
+<div id="toast" class="toast"></div>
+
+<script>
+/* ============================================================
+   1. نظام الإعدادات
+   ============================================================ */
+const Settings = {
+    KEY: 'rainbow_hub_settings',
+    defaults: {
+        player_name: 'لاعب',
+        theme: 'dark',
+        sound_enabled: true,
+        active_theme: 'default',
+        active_icon: 'default'
+    },
+    load() {
+        try {
+            const d = localStorage.getItem(this.KEY);
+            return d ? { ...this.defaults, ...JSON.parse(d) } : { ...this.defaults };
+        } catch (e) { return { ...this.defaults }; }
+    },
+    save(d) { localStorage.setItem(this.KEY, JSON.stringify(d)); },
+    get(k) { return this.load()[k]; },
+    set(k, v) { const d = this.load(); d[k] = v; this.save(d); },
+    getPlayerName() { return this.get('player_name'); },
+    setPlayerName(n) { this.set('player_name', n.trim() || 'لاعب'); }
+};
+
+/* ============================================================
+   2. نظام الأصوات
+   ============================================================ */
+const Sound = {
+    enabled: true,
+    ctx: null,
+    init() {
+        if (!this.ctx) {
+            try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+        }
+    },
+    beep(freq, dur, type = 'sine') {
+        if (!this.enabled || !this.ctx) return;
+        try {
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.value = freq;
+            g.gain.setValueAtTime(0.1, this.ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur / 1000);
+            osc.connect(g); g.connect(this.ctx.destination);
+            osc.start(); osc.stop(this.ctx.currentTime + dur / 1000);
+        } catch (e) {}
+    },
+    click() { this.beep(800, 50); },
+    success() { this.beep(1000, 100); setTimeout(() => this.beep(1500, 150), 100); },
+    error() { this.beep(400, 200, 'square'); },
+    levelUp() { [600, 800, 1000, 1200, 1500].forEach((f, i) => setTimeout(() => this.beep(f, 80), i * 80)); },
+    badge() { this.beep(1200, 100); setTimeout(() => this.beep(1600, 100), 100); setTimeout(() => this.beep(2000, 150), 200); },
+    chest() { [400, 600, 800, 1000, 1300, 1600].forEach((f, i) => setTimeout(() => this.beep(f, 100), i * 100)); }
+};
+
+/* ============================================================
+   3. نظام XP
+   ============================================================ */
+const XPSystem = {
+    KEY: 'rainbow_hub_profile',
+    BADGES: {
+        first_win: { name: 'أول فوز', icon: '🥇' },
+        speed_demon: { name: 'سريع كالبرق', icon: '⚡' },
+        persistent: { name: 'المثابر', icon: '💪' },
+        master: { name: 'المحترف', icon: '👑' },
+        level_5: { name: 'المستوى الخامس', icon: '🌟' },
+        collector: { name: 'الجامع', icon: '🎯' },
+        daily_streak: { name: 'المواظب', icon: '📅' },
+        shopaholic: { name: 'المتسوق', icon: '🛍️' },
+        social: { name: 'الاجتماعي', icon: '👥' },
+        lucky: { name: 'المحظوظ', icon: '🍀' },
+        generous: { name: 'الكريم', icon: '🎁' },
+        battler: { name: 'المقاتل', icon: '⚔️' }
+    },
+    defaults: {
+        xp: 0, level: 1, games_played: 0, games_won: 0,
+        badges: [], coins: 500,
+        daily_streak: 0, last_daily: '', daily_completed: false,
+        purchases: [], friends: [],
+        chests_opened: 0, last_chest: '',
+        battles_won: 0, battles_played: 0,
+        history: []
+    },
+    load() {
+        try {
+            const d = localStorage.getItem(this.KEY);
+            return d ? { ...this.defaults, ...JSON.parse(d) } : { ...this.defaults };
+        } catch (e) { return { ...this.defaults }; }
+    },
+    save(d) { localStorage.setItem(this.KEY, JSON.stringify(d)); },
+    getProfile() { return this.load(); },
+    xpNeeded(l) { return l * 100; },
+    getProgress() {
+        const p = this.load();
+        const needed = this.xpNeeded(p.level);
+        return { current: p.xp, needed, percent: Math.min((p.xp / needed) * 100, 100) };
+    },
+    checkBadges(p) {
+        const earned = new Set(p.badges);
+        const newB = [];
+        const checks = [
+            [p.games_won >= 1, 'first_win'],
+            [p.games_played >= 10, 'persistent'],
+            [p.games_won >= 5, 'master'],
+            [p.level >= 5, 'level_5'],
+            [p.badges.length >= 5, 'collector'],
+            [p.daily_streak >= 3, 'daily_streak'],
+            [p.purchases.length >= 3, 'shopaholic'],
+            [p.friends.length >= 3, 'social'],
+            [p.chests_opened >= 5, 'generous'],
+            [p.battles_won >= 1, 'battler']
+        ];
+        checks.forEach(([cond, key]) => {
+            if (cond && !earned.has(key)) newB.push(key);
+        });
+        return newB;
+    },
+    addXP(amount, isDaily = false) {
+        const p = this.load();
+        if (isDaily) amount *= 2;
+        p.xp += amount;
+        let levelUp = false;
+        while (p.xp >= this.xpNeeded(p.level)) {
+            p.xp -= this.xpNeeded(p.level);
+            p.level++;
+            levelUp = true;
+        }
+        const newB = this.checkBadges(p);
+        p.badges.push(...newB);
+        this.save(p);
+        return { levelUp, newBadges: newB, xp: amount };
+    },
+    recordGamePlayed() {
+        const p = this.load();
+        p.games_played++;
+        this.save(p);
+    },
+    recordGameWon(attempts, isDaily = false) {
+        const p = this.load();
+        p.games_won++;
+        let xp = 30;
+        if (attempts <= 3) {
+            xp = 100;
+            if (!p.badges.includes('speed_demon')) p.badges.push('speed_demon');
+        } else if (attempts <= 6) xp = 60;
+        const coins = Math.floor(xp / 2);
+        p.coins += coins;
+        this.save(p);
+        this.logHistory(xp);
+        const result = this.addXP(xp, isDaily);
+        return { ...result, coins };
+    },
+    logHistory(xp) {
+        const p = this.load();
+        const today = new Date().toISOString().split('T')[0];
+        const entry = p.history.find(h => h.date === today);
+        if (entry) entry.xp += xp;
+        else p.history.push({ date: today, xp });
+        p.history = p.history.slice(-30);
+        this.save(p);
+    },
+    checkDailyReset() {
+        const p = this.load();
+        const today = new Date().toISOString().split('T')[0];
+        if (p.last_daily !== today) {
+            if (p.last_daily) {
+                const last = new Date(p.last_daily);
+                const diff = Math.floor((new Date(today) - last) / 86400000);
+                p.daily_streak = diff === 1 ? p.daily_streak + 1 : 1;
+            } else p.daily_streak = 1;
+            p.last_daily = today;
+            p.daily_completed = false;
+            this.save(p);
+        }
+    },
+    isDailyCompleted() {
+        const p = this.load();
+        const today = new Date().toISOString().split('T')[0];
+        return p.last_daily === today && p.daily_completed;
+    },
+    completeDaily() {
+        const p = this.load();
+        p.daily_completed = true;
+        this.save(p);
+    },
+    canOpenChest() {
+        const p = this.load();
+        if (!p.last_chest) return { can: true, msg: 'متاح الآن' };
+        const last = new Date(p.last_chest);
+        const diff = (Date.now() - last.getTime()) / 3600000;
+        if (diff >= 24) return { can: true, msg: 'متاح الآن' };
+        const rem = 24 - diff;
+        const h = Math.floor(rem);
+        const m = Math.floor((rem - h) * 60);
+        return { can: false, msg: `متاح بعد ${h}س ${m}د` };
+    },
+    openChest() {
+        const p = this.load();
+        if (!this.canOpenChest().can) return null;
+        const rewards = [
+            { type: 'coins', min: 50, max: 150, weight: 40, rarity: 'عادي' },
+            { type: 'xp', min: 30, max: 80, weight: 30, rarity: 'عادي' },
+            { type: 'coins', min: 200, max: 400, weight: 15, rarity: 'جيد' },
+            { type: 'xp', min: 100, max: 200, weight: 10, rarity: 'جيد' },
+            { type: 'coins', min: 500, max: 1000, weight: 4, rarity: 'نادر' },
+            { type: 'xp', min: 250, max: 500, weight: 1, rarity: 'نادر جداً' }
+        ];
+        const total = rewards.reduce((s, r) => s + r.weight, 0);
+        let rand = Math.random() * total;
+        let reward = rewards[0];
+        for (const r of rewards) {
+            if (rand < r.weight) { reward = r; break; }
+            rand -= r.weight;
+        }
+        const amount = Math.floor(Math.random() * (reward.max - reward.min + 1)) + reward.min;
+        if (reward.type === 'coins') p.coins += amount;
+        else p.xp += amount;
+        p.chests_opened++;
+        p.last_chest = new Date().toISOString();
+        if ((reward.rarity === 'نادر' || reward.rarity === 'نادر جداً') && !p.badges.includes('lucky')) {
+            p.badges.push('lucky');
+        }
+        const newB = this.checkBadges(p);
+        p.badges.push(...newB);
+        this.save(p);
+        return { ...reward, amount, newBadges: newB };
+    }
+};
+
+/* ============================================================
+   4. لوحة المتصدرين
+   ============================================================ */
+const Leaderboard = {
+    KEY: 'rainbow_hub_leaderboard',
+    load() {
+        try { return JSON.parse(localStorage.getItem(this.KEY)) || {}; }
+        catch (e) { return {}; }
+    },
+    save(d) { localStorage.setItem(this.KEY, JSON.stringify(d)); },
+    add(game, player, score) {
+        const d = this.load();
+        if (!d[game]) d[game] = [];
+        d[game].push({ player, score, date: new Date().toLocaleString('ar-EG') });
+        d[game].sort((a, b) => a.score - b.score);
+        d[game] = d[game].slice(0, 10);
+        this.save(d);
+    },
+    get(game) { return this.load()[game] || []; },
+    clear() { this.save({}); }
+};
+
+/* ============================================================
+   5. نظام الأصدقاء
+   ============================================================ */
+const Friends = {
+    FAKE: ['أحمد', 'سارة', 'محمد', 'ليلى', 'عمر', 'نور', 'خالد', 'ريم', 'يوسف', 'هند'],
+    get() { return XPSystem.getProfile().friends; },
+    add(name) {
+        const p = XPSystem.load();
+        name = name.trim();
+        if (!name || name === Settings.getPlayerName()) return { ok: false, msg: 'اسم غير صالح' };
+        if (p.friends.includes(name)) return { ok: false, msg: 'موجود مسبقاً' };
+        if (p.friends.length >= 20) return { ok: false, msg: 'الحد 20' };
+        p.friends.push(name);
+        const newB = XPSystem.checkBadges(p);
+        p.badges.push(...newB);
+        XPSystem.save(p);
+        return { ok: true, msg: `تمت إضافة ${name}` };
+    },
+    remove(name) {
+        const p = XPSystem.load();
+        p.friends = p.friends.filter(f => f !== name);
+        XPSystem.save(p);
+    },
+    suggest() {
+        const cur = new Set(this.get());
+        cur.add(Settings.getPlayerName());
+        return this.FAKE.filter(f => !cur.has(f)).slice(0, 5);
+    },
+    friendScore(name, game) {
+        let h = 0;
+        const str = name + game;
+        for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+        return (h % 13) + 3;
+    },
+    ranking(game) {
+        const list = this.get().map(f => ({
+            name: f, score: this.friendScore(f, game), isPlayer: false
+        }));
+        const scores = Leaderboard.get(game);
+        if (scores.length) list.push({ name: Settings.getPlayerName(), score: scores[0].score, isPlayer: true });
+        list.sort((a, b) => a.score - b.score);
+        return list;
+    }
+};
+
+/* ============================================================
+   6. الموسم
+   ============================================================ */
+const Season = {
+    name() {
+        const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+        const d = new Date();
+        return `موسم ${months[d.getMonth()]} ${d.getFullYear()}`;
+    },
+    daysLeft() {
+        const now = new Date();
+        const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        return Math.ceil((end - now) / 86400000);
+    },
+    leaderboard() {
+        const p = XPSystem.getProfile();
+        const totalXP = p.xp + Array.from({ length: p.level - 1 }, (_, i) => (i + 1) * 100).reduce((a, b) => a + b, 0);
+        const list = [{ name: Settings.getPlayerName(), xp: totalXP, level: p.level, isPlayer: true }];
+        Friends.get().forEach(f => {
+            let h = 0;
+            for (let i = 0; i < f.length; i++) h = (h * 31 + f.charCodeAt(i)) >>> 0;
+            const xp = (h % 800) + 50;
+            list.push({ name: f, xp, level: Math.max(1, Math.floor(xp / 150)), isPlayer: false });
+        });
+        list.sort((a, b) => b.xp - a.xp);
+        return list.slice(0, 20);
+    }
+};
+
+/* ============================================================
+   7. المتجر
+   ============================================================ */
+const Shop = {
+    THEMES: {
+        default: { name: 'الافتراضي', price: 0, colors: { bg: '#4A4A4A', card: '#2B2B2B', accent: '#FFC107' } },
+        ocean: { name: 'المحيط 🌊', price: 300, colors: { bg: '#1A3A5C', card: '#0F2A45', accent: '#00BCD4' } },
+        forest: { name: 'الغابة 🌲', price: 300, colors: { bg: '#1E3A1E', card: '#0F2A0F', accent: '#4CAF50' } },
+        sunset: { name: 'الغروب 🌅', price: 500, colors: { bg: '#5C2A1A', card: '#3D1A0F', accent: '#FF5722' } },
+        royal: { name: 'الملكي 👑', price: 500, colors: { bg: '#3A1A5C', card: '#2A0F45', accent: '#9C27B0' } }
+    },
+    ICONS: {
+        default: { name: 'الافتراضي', price: 0, emoji: '🌈' },
+        fire: { name: 'النار 🔥', price: 200, emoji: '🔥' },
+        diamond: { name: 'الماس 💎', price: 400, emoji: '💎' },
+        star: { name: 'النجمة ⭐', price: 300, emoji: '⭐' },
+        crown: { name: 'التاج 👑', price: 600, emoji: '👑' }
+    },
+    owned(type, key) {
+        const p = XPSystem.getProfile();
+        if (key === 'default') return true;
+        return p.purchases.includes(`${type}_${key}`);
+    },
+    buy(type, key, price) {
+        if (this.owned(type, key)) return { ok: false, msg: 'مملوك' };
+        const p = XPSystem.load();
+        if (p.coins < price) return { ok: false, msg: 'عملات غير كافية' };
+        p.coins -= price;
+        p.purchases.push(`${type}_${key}`);
+        const newB = XPSystem.checkBadges(p);
+        p.badges.push(...newB);
+        XPSystem.save(p);
+        return { ok: true, msg: 'تم الشراء' };
+    }
+};
+
+/* ============================================================
+   8. التنقل بين الصفحات
+   ============================================================ */
+function navigateTo(page) {
+    Sound.click();
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(`page-${page}`);
+    if (target) target.classList.add('active');
+    window.scrollTo(0, 0);
+
+    // تحديث الصفحة حسب النوع
+    if (page === 'daily') renderDaily();
+    else if (page === 'chest') renderChest();
+    else if (page === 'shop') renderShop();
+    else if (page === 'friends') renderFriends();
+    else if (page === 'battle') renderBattle();
+    else if (page === 'season') renderSeason();
+    else if (page === 'stats') renderStats();
+    else if (page === 'leaderboard') renderLeaderboard();
+    else if (page === 'profile') renderProfile();
+}
+
+/* ============================================================
+   9. التحديث العام للواجهة
+   ============================================================ */
+function updateUI() {
+    const p = XPSystem.getProfile();
+    const prog = XPSystem.getProgress();
+    document.getElementById('level-text').textContent = `⭐ المستوى ${p.level}`;
+    document.getElementById('coins-text').textContent = `💰 ${p.coins}`;
+    document.getElementById('xp-progress').style.width = `${prog.percent}%`;
+    document.getElementById('xp-text').textContent = `${prog.current} / ${prog.needed} XP`;
+
+    // الثيم
+    if (Settings.get('theme') === 'light') document.body.classList.add('light');
+    else document.body.classList.remove('light');
+    document.getElementById('theme-btn').textContent = Settings.get('theme') === 'light' ? '🌙' : '☀️';
+    document.getElementById('sound-btn').textContent = Sound.enabled ? '🔊' : '🔇';
+}
+
+/* ============================================================
+   10. التحدي اليومي
+   ============================================================ */
+function renderDaily() {
+    const p = XPSystem.getProfile();
+    const completed = XPSystem.isDailyCompleted();
+    const el = document.getElementById('daily-content');
+    el.innerHTML = `
+        <div style="text-align:center; padding:15px;">
+            <div style="font-size:14px; font-weight:bold; margin-bottom:8px;">🔥 سلسلة الأيام</div>
+            <div style="font-size:38px; font-weight:bold; color:#FF5722; margin:10px 0;">${p.daily_streak} يوم</div>
+            ${completed
+                ? '<div style="color:#4CAF50; font-weight:bold; padding:10px;">✅ أكملت تحدي اليوم!</div>'
+                : `<div style="color:#FFC107; margin:8px 0;">⚡ مكافأة مضاعفة (XP × 2)</div>
+                   <button class="action-btn orange" style="margin-top:10px;" onclick="startNumberGuess(true)">🎯 ابدأ التحدي</button>`
+            }
+        </div>
+    `;
+}
+
+/* ============================================================
+   11. الصندوق
+   ============================================================ */
+function renderChest() {
+    const status = XPSystem.canOpenChest();
+    const p = XPSystem.getProfile();
+    const el = document.getElementById('chest-content');
+    el.innerHTML = `
+        <div style="text-align:center;">
+            <div class="chest-display" id="chest-box">📦</div>
+            <div style="font-weight:bold; color:${status.can ? '#4CAF50' : '#FF9800'}; margin:10px 0;">${status.msg}</div>
+            <button class="action-btn pink" id="chest-open-btn" ${status.can ? '' : 'disabled style="opacity:0.5;cursor:not-allowed;"'} onclick="openChest()">
+                ${status.can ? '🎁 افتح الصندوق' : '⏳ انتظر...'}
+            </button>
+            <div class="card" style="margin-top:20px; text-align:center;">
+                <div style="font-size:14px; font-weight:bold;">📊 إحصائيات الصناديق</div>
+                <div style="color:var(--text-dim); margin-top:8px;">📦 صناديق مفتوحة: ${p.chests_opened}</div>
+                <div style="color:var(--text-dim); margin-top:5px;">🎁 صندوق مجاني كل 24 ساعة</div>
+            </div>
+        </div>
+    `;
+}
+
+function openChest() {
+    const status = XPSystem.canOpenChest();
+    if (!status.can) return;
+    Sound.chest();
+    const box = document.getElementById('chest-box');
+    box.classList.add('shaking');
+    box.textContent = '✨';
+
+    setTimeout(() => {
+        box.classList.remove('shaking');
+        const reward = XPSystem.openChest();
+        if (!reward) return;
+        if (reward.rarity === 'نادر' || reward.rarity === 'نادر جداً') {
+            box.textContent = '💎';
+            Sound.success();
+        } else {
+            box.textContent = '🎉';
+            Sound.success();
+        }
+        updateUI();
+        setTimeout(() => showChestReward(reward), 500);
+    }, 1500);
+}
+
+function showChestReward(r) {
+    const colors = { 'عادي': '#9E9E9E', 'جيد': '#2196F3', 'نادر': '#9C27B0', 'نادر جداً': '#FFC107' };
+    const color = colors[r.rarity] || '#4CAF50';
+    let html = `
+        <div style="font-size:14px; color:${color}; font-weight:bold; margin-bottom:10px;">✨ ${r.rarity}</div>
+        <div style="font-size:28px; font-weight:bold; color:#FFC107; margin:15px 0;">
+            ${r.type === 'coins' ? '💰 +' + r.amount : '⚡ +' + r.amount + ' XP'}
+        </div>
+    `;
+    r.newBadges.forEach(b => {
+        html += `<div style="color:#FFC107; font-weight:bold; margin:5px 0;">${XPSystem.BADGES[b].icon} ${XPSystem.BADGES[b].name}</div>`;
+        Sound.badge();
+    });
+    showModal('🎉 مبروك!', html, [
+        { text: 'رائع! ✨', class: 'confirm', action: () => { closeModal(); renderChest(); } }
+    ]);
+}
+
+/* ============================================================
+   12. المتجر
+   ============================================================ */
+function renderShop() {
+    const p = XPSystem.getProfile();
+    const el = document.getElementById('shop-content');
+    let html = `<div style="text-align:center; color:#FFC107; font-weight:bold; margin:10px 0;">💰 ${p.coins} عملة</div>`;
+    html += `<div class="tabs">
+        <button class="tab active" onclick="switchShopTab('themes', this)">🎨 الثيمات</button>
+        <button class="tab" onclick="switchShopTab('icons', this)">🖼️ الأيقونات</button>
+    </div>`;
+    html += `<div id="shop-items" class="scroll-area"></div>`;
+    el.innerHTML = html;
+    renderShopItems('themes');
+}
+
+function switchShopTab(tab, btn) {
+    Sound.click();
+    document.querySelectorAll('#shop-content .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderShopItems(tab);
+}
+
+function renderShopItems(tab) {
+    const items = tab === 'themes' ? Shop.THEMES : Shop.ICONS;
+    const active = Settings.get(tab === 'themes' ? 'active_theme' : 'active_icon');
+    const el = document.getElementById('shop-items');
+    let html = '';
+    Object.keys(items).forEach(key => {
+        const item = items[key];
+        const owned = Shop.owned(tab === 'themes' ? 'theme' : 'icon', key);
+        const isActive = key === active;
+        html += `
+            <div class="shop-item">
+                <div class="shop-preview">${tab === 'themes' ? '🎨' : item.emoji}</div>
+                <div class="shop-info">
+                    <div class="shop-name">${item.name}</div>
+                    <div class="shop-price">${item.price === 0 ? 'مجاني' : '💰 ' + item.price}</div>
+                </div>
+                ${isActive
+                    ? '<button class="shop-action active">✅ مُفعّل</button>'
+                    : owned
+                        ? `<button class="shop-action activate" onclick="activateShopItem('${tab}', '${key}')">تفعيل</button>`
+                        : `<button class="shop-action buy" onclick="buyShopItem('${tab}', '${key}', ${item.price})">شراء</button>`
+                }
+            </div>
+        `;
+    });
+    el.innerHTML = html;
+}
+
+function buyShopItem(tab, key, price) {
+    Sound.click();
+    const type = tab === 'themes' ? 'theme' : 'icon';
+    const result = Shop.buy(type, key, price);
+    if (result.ok) {
+        Sound.success();
+        showToast('✅ تم الشراء!');
+    } else {
+        Sound.error();
+        showToast('❌ ' + result.msg);
+    }
+    updateUI();
+    renderShop();
+}
+
+function activateShopItem(tab, key) {
+    Sound.click();
+    Settings.set(tab === 'themes' ? 'active_theme' : 'active_icon', key);
+    applyTheme();
+    renderShop();
+}
+
+function applyTheme() {
+    const active = Settings.get('active_theme');
+    const theme = Shop.THEMES[active] || Shop.THEMES.default;
+    document.documentElement.style.setProperty('--accent', theme.colors.accent);
+    if (Settings.get('theme') === 'dark') {
+        document.documentElement.style.setProperty('--bg', theme.colors.bg);
+        document.documentElement.style.setProperty('--card', theme.colors.card);
+    }
+}
+
+/* ============================================================
+   13. الأصدقاء
+   ============================================================ */
+function renderFriends() {
+    const friends = Friends.get();
+    const el = document.getElementById('friends-content');
+    let html = `<div class="card"><div style="text-align:center; font-weight:bold; margin-bottom:10px;">👥 ${friends.length} / 20</div></div>`;
+
+    html += `<div class="card">
+        <div style="font-weight:bold; margin-bottom:10px; text-align:center;">➕ إضافة صديق</div>
+        <div style="display:flex; gap:5px;">
+            <input type="text" id="friend-input" class="guess-input" placeholder="اسم الصديق..." style="flex:1;">
+            <button class="play-btn" onclick="addFriend()">إضافة</button>
+        </div>
+        <div style="margin-top:10px;">`;
+    const sug = Friends.suggest();
+    if (sug.length) {
+        html += `<div style="font-size:11px; color:var(--text-dim); margin-bottom:5px;">💡 اقتراحات:</div>`;
+        sug.slice(0, 3).forEach(n => {
+            html += `<button class="back-btn" style="margin:2px;" onclick="addFriendQuick('${n}')">+ ${n}</button>`;
+        });
+    }
+    html += `</div></div>`;
+
+    if (friends.length) {
+        friends.forEach(f => {
+            html += `<div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:12px;">
+                <span>👤 ${f}</span>
+                <button class="back-btn" onclick="removeFriend('${f}')" style="background:#F44336; color:white; padding:5px 12px;">🗑</button>
+            </div>`;
+        });
+
+        // المقارنة
+        const ranking = Friends.ranking('تخمين الرقم');
+        if (ranking.length > 1) {
+            html += `<h3 style="text-align:center; margin:15px 0 10px;">🏆 المقارنة</h3>`;
+            ranking.forEach((r, i) => {
+                const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
+                html += `<div class="card" style="display:flex; justify-content:space-between; padding:10px; background:${r.isPlayer ? 'var(--accent)' : 'var(--card)'};">
+                    <span>${medal} ${r.name}${r.isPlayer ? ' (أنت)' : ''}</span>
+                    <span>${r.score} محاولة</span>
+                </div>`;
+            });
+        }
+    } else {
+        html += `<div class="card" style="text-align:center; color:var(--text-dim);">لا يوجد أصدقاء بعد!</div>`;
+    }
+    el.innerHTML = html;
+}
+
+function addFriend() {
+    const input = document.getElementById('friend-input');
+    const name = input.value.trim();
+    if (!name) return;
+    Sound.click();
+    const res = Friends.add(name);
+    if (res.ok) { Sound.success(); showToast('✅ ' + res.msg); }
+    else { Sound.error(); showToast('❌ ' + res.msg); }
+    renderFriends();
+    updateUI();
+}
+
+function addFriendQuick(name) {
+    Sound.click();
+    const res = Friends.add(name);
+    if (res.ok) Sound.success();
+    renderFriends();
+    updateUI();
+}
+
+function removeFriend(name) {
+    Sound.click();
+    Friends.remove(name);
+    renderFriends();
+}
+
+/* ============================================================
+   14. تحدي 1v1
+   ============================================================ */
+function renderBattle() {
+    const friends = Friends.get();
+    const p = XPSystem.getProfile();
+    const el = document.getElementById('battle-content');
+    let html = `<div class="card" style="text-align:center;">
+        <div style="font-weight:bold;">📊 سجل المعارك</div>
+        <div style="color:var(--text-dim); margin-top:8px;">⚔️ لُعبت: ${p.battles_played} | 🏆 فُزت: ${p.battles_won}</div>
+    </div>`;
+    if (!friends.length) {
+        html += `<div class="card" style="text-align:center; color:var(--text-dim);">أضف أصدقاء أولاً!</div>`;
+    } else {
+        html += `<div style="text-align:center; font-weight:bold; margin:15px 0 10px;">اختر خصماً:</div>`;
+        friends.forEach(f => {
+            html += `<div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:12px;">
+                <span>👤 ${f}</span>
+                <button class="action-btn red small" style="margin:0;" onclick="startBattle('${f}')">⚔️ تحدَّ</button>
+            </div>`;
+        });
+    }
+    el.innerHTML = html;
+}
+
+function startBattle(opponent) {
+    Sound.click();
+    showModal('⚔️ تحدي', `هل أنت مستعد لتحدي ${opponent}؟<br><br>🎯 من يستخدم محاولات أقل يفوز!`, [
+        { text: '🚀 ابدأ', class: 'confirm', action: () => {
+            closeModal();
+            // محاكاة محاولات الخصم
+            let h = 0;
+            for (let i = 0; i < opponent.length; i++) h = (h * 31 + opponent.charCodeAt(i)) >>> 0;
+            window._opponentAttempts = (h % 10) + 3;
+            window._opponentName = opponent;
+            window._isBattle = true;
+            startNumberGuess(false);
+        }},
+        { text: '❌ إلغاء', class: 'cancel', action: closeModal }
+    ]);
+}
+
+/* ============================================================
+   15. الموسم
+   ============================================================ */
+function renderSeason() {
+    const el = document.getElementById('season-content');
+    const ranking = Season.leaderboard();
+    let html = `
+        <div class="card" style="text-align:center;">
+            <div style="font-size:16px; font-weight:bold; color:var(--accent);">${Season.name()}</div>
+            <div style="color:var(--text-dim); margin:8px 0;">⏳ ${Season.daysLeft()} يوم متبقي</div>
+        </div>
+        <div class="card">
+            <div style="font-weight:bold; margin-bottom:10px; text-align:center;">🎁 جوائز الموسم</div>
+            <div style="display:flex; justify-content:space-between; margin:5px 0;"><span>🥇 المركز 1</span><span style="color:var(--text-dim); font-size:12px;">1000 عملة</span></div>
+            <div style="display:flex; justify-content:space-between; margin:5px 0;"><span>🥈 المركز 2-3</span><span style="color:var(--text-dim); font-size:12px;">700 عملة</span></div>
+            <div style="display:flex; justify-content:space-between; margin:5px 0;"><span>🥉 المركز 4-10</span><span style="color:var(--text-dim); font-size:12px;">400 عملة</span></div>
+        </div>
+        <h3 style="text-align:center; margin:15px 0 10px;">🏆 الترتيب</h3>
+    `;
+    ranking.forEach((r, i) => {
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
+        html += `<div class="card" style="display:grid; grid-template-columns:50px 1fr 60px 80px; padding:10px; background:${r.isPlayer ? 'var(--accent)' : 'var(--card)'}; color:${r.isPlayer ? '#000' : 'var(--text)'};">
+            <span>${medal}</span>
+            <span>${r.name}${r.isPlayer ? ' (أنت)' : ''}</span>
+            <span>⭐ ${r.level}</span>
+            <span>⚡ ${r.xp}</span>
+        </div>`;
+    });
+    el.innerHTML = html;
+}
+
+/* ============================================================
+   16. الإحصائيات
+   ============================================================ */
+function renderStats() {
+    const p = XPSystem.getProfile();
+    const totalXP = p.xp + Array.from({ length: p.level - 1 }, (_, i) => (i + 1) * 100).reduce((a, b) => a + b, 0);
+    const el = document.getElementById('stats-content');
+
+    let html = `<div class="card">
+        <div style="font-weight:bold; margin-bottom:10px; text-align:center;">📊 ملخص</div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0;"><span>⭐ المستوى</span><span style="color:var(--accent); font-weight:bold;">${p.level}</span></div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0;"><span>⚡ إجمالي XP</span><span style="color:var(--accent); font-weight:bold;">${totalXP}</span></div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0;"><span>🎮 الألعاب</span><span style="color:var(--accent); font-weight:bold;">${p.games_played}</span></div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0;"><span>🏆 الانتصارات</span><span style="color:var(--accent); font-weight:bold;">${p.games_won}</span></div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0;"><span>⚔️ المعارك</span><span style="color:var(--accent); font-weight:bold;">${p.battles_won}/${p.battles_played}</span></div>
+        <div style="display:flex; justify-content:space-between; padding:5px 0;"><span>💰 العملات</span><span style="color:var(--accent); font-weight:bold;">${p.coins}</span></div>
+    </div>`;
+
+    // الرسم البياني
+    html += `<div class="card">
+        <div style="font-weight:bold; margin-bottom:10px; text-align:center;">📈 XP آخر 7 أيام</div>
+        <div class="chart">`;
+    const today = new Date();
+    const days = ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
+    let maxXP = 1;
+    const last7 = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        const entry = p.history.find(h => h.date === dateStr);
+        const xp = entry ? entry.xp : 0;
+        if (xp > maxXP) maxXP = xp;
+        last7.push({ day: days[d.getDay()], xp });
+    }
+    last7.forEach(d => {
+        const h = (d.xp / maxXP) * 120;
+        html += `<div class="chart-bar" style="height:${Math.max(h, 3)}px;">
+            ${d.xp > 0 ? `<div class="chart-bar-value">${d.xp}</div>` : ''}
+            <div class="chart-bar-label">${d.day}</div>
+        </div>`;
+    });
+    html += `</div></div>`;
+    el.innerHTML = html;
+}
+
+/* ============================================================
+   17. لوحة المتصدرين
+   ============================================================ */
+function renderLeaderboard() {
+    const scores = Leaderboard.get('تخمين الرقم');
+    const el = document.getElementById('leaderboard-content');
+    if (!scores.length) {
+        el.innerHTML = '<div class="card" style="text-align:center; color:var(--text-dim);">لا توجد نتائج بعد!</div>';
+        return;
+    }
+    let html = `<table>
+        <tr><th>الترتيب</th><th>اللاعب</th><th>المحاولات</th><th>التاريخ</th></tr>`;
+    const medals = ['🥇', '🥈', '🥉'];
+    scores.forEach((s, i) => {
+        const rank = i < 3 ? medals[i] : `#${i + 1}`;
+        html += `<tr>
+            <td>${rank}</td>
+            <td>${s.player}</td>
+            <td style="color:#4CAF50; font-weight:bold;">${s.score}</td>
+            <td style="font-size:11px; color:var(--text-dim);">${s.date}</td>
+        </tr>`;
+    });
+    html += `</table>`;
+    html += `<button class="action-btn red small" style="margin-top:15px;" onclick="if(confirm('مسح كل النتائج؟')) { Leaderboard.clear(); renderLeaderboard(); }">🗑 مسح الكل</button>`;
+    el.innerHTML = html;
+}
+
+/* ============================================================
+   18. الملف الشخصي
+   ============================================================ */
+function renderProfile() {
+    const p = XPSystem.getProfile();
+    const prog = XPSystem.getProgress();
+    const el = document.getElementById('profile-content');
+    let html = `<div class="card" style="text-align:center;">
+        <div style="font-size:18px; font-weight:bold; color:var(--accent);">👤 ${Settings.getPlayerName()}</div>
+        <div style="color:#FFC107; margin-top:5px;">💰 ${p.coins} عملة</div>
+    </div>`;
+    html += `<div class="card" style="text-align:center;">
+        <div style="font-weight:bold;">⭐ المستوى ${p.level}</div>
+        <div class="progress-bar" style="margin:10px 0;"><div class="progress-fill" style="width:${prog.percent}%;"></div></div>
+        <div style="font-size:11px; color:var(--text-dim);">${prog.current} / ${prog.needed} XP</div>
+    </div>`;
+    html += `<div class="card">
+        <div style="font-weight:bold; text-align:center; margin-bottom:10px;">🎖️ الشارات (${p.badges.length}/${Object.keys(XPSystem.BADGES).length})</div>
+        <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:5px;">`;
+    Object.keys(XPSystem.BADGES).forEach(key => {
+        const b = XPSystem.BADGES[key];
+        const earned = p.badges.includes(key);
+        html += `<div title="${b.name}" style="aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:20px; background:${earned ? 'var(--accent)' : 'var(--frame)'}; border-radius:8px; opacity:${earned ? 1 : 0.4};">
+            ${b.icon}
+        </div>`;
+    });
+    html += `</div></div>`;
+    el.innerHTML = html;
+}
+
+/* ============================================================
+   19. لعبة تخمين الرقم
+   ============================================================ */
+let _secretNumber = 0;
+let _attempts = 0;
+let _isWon = false;
+let _isDaily = false;
+
+function startNumberGuess(isDaily) {
+    Sound.click();
+    _secretNumber = Math.floor(Math.random() * 100) + 1;
+    _attempts = 0;
+    _isWon = false;
+    _isDaily = isDaily;
+
+    navigateTo('game');
+    const container = document.getElementById('game-container');
+    container.innerHTML = `
+        <div class="game-container">
+            ${isDaily ? '<div style="color:#FF9800; font-weight:bold; margin-bottom:10px;">📅 التحدي اليومي ⚡ مكافأة ×2</div>' : ''}
+            <div class="game-title">🎯 تخمين الرقم</div>
+            <div class="game-subtitle">خمن رقماً بين 1 و 100</div>
+            <input type="number" id="guess-input" class="guess-input" placeholder="أدخل رقمك..." min="1" max="100">
+            <button class="guess-btn" onclick="checkGuess()">تخمين</button>
+            <div class="guess-result" id="guess-result"></div>
+            <div class="attempts-text">المحاولات: <span id="attempts-count">0</span></div>
+        </div>
+    `;
+    document.getElementById('guess-input').addEventListener('keypress', e => {
+        if (e.key === 'Enter') checkGuess();
+    });
+    document.getElementById('guess-input').focus();
+}
+
+function checkGuess() {
+    if (_isWon) return;
+    const input = document.getElementById('guess-input');
+    const result = document.getElementById('guess-result');
+    const val = parseInt(input.value);
+
+    if (isNaN(val) || val < 1 || val > 100) {
+        Sound.error();
+        result.textContent = '⚠️ أدخل رقماً بين 1 و 100!';
+        result.style.color = '#FF9800';
+        return;
+    }
+
+    _attempts++;
+    document.getElementById('attempts-count').textContent = _attempts;
+
+    if (val < _secretNumber) {
+        Sound.click();
+        result.textContent = '⬆️ الرقم أكبر!';
+        result.style.color = '#2196F3';
+    } else if (val > _secretNumber) {
+        Sound.click();
+        result.textContent = '⬇️ الرقم أصغر!';
+        result.style.color = '#2196F3';
+    } else {
+        _isWon = true;
+        Sound.success();
+        result.textContent = `🎉 أحسنت! الرقم هو ${_secretNumber}`;
+        result.style.color = '#4CAF50';
+        input.disabled = true;
+
+        // حفظ النتيجة
+        Leaderboard.add('تخمين الرقم', Settings.getPlayerName(), _attempts);
+
+        // معالجة المكافآت
+        if (window._isBattle) {
+            handleBattleResult();
+        } else {
+            const res = XPSystem.recordGameWon(_attempts, _isDaily);
+            if (_isDaily) {
+                XPSystem.completeDaily();
+            }
+            updateUI();
+            showRewards(res);
+        }
+    }
+    input.value = '';
+    input.focus();
+}
+
+function handleBattleResult() {
+    const opponent = window._opponentName;
+    const oppAttempts = window._opponentAttempts;
+    const won = _attempts <= oppAttempts;
+
+    const p = XPSystem.load();
+    p.battles_played++;
+    if (won) {
+        p.battles_won++;
+        p.coins += 50;
+        const newB = XPSystem.checkBadges(p);
+        p.badges.push(...newB);
+        XPSystem.save(p);
+    } else {
+        XPSystem.save(p);
+    }
+
+    const result = document.getElementById('guess-result');
+    if (won) {
+        result.innerHTML = `🏆 فزت!<br>أنت: ${_attempts} محاولة<br>${opponent}: ${oppAttempts} محاولة`;
+        result.style.color = '#4CAF50';
+        Sound.success();
+        showModal('🏆 فوز!', `💰 +50 عملة<br><br>أنت: ${_attempts} محاولة<br>${opponent}: ${oppAttempts}`, [
+            { text: 'رائع! ✨', class: 'confirm', action: () => { closeModal(); window._isBattle = false; navigateTo('home'); updateUI(); } }
+        ]);
+    } else {
+        result.innerHTML = `😔 خسرت!<br>أنت: ${_attempts} محاولة<br>${opponent}: ${oppAttempts} محاولة`;
+        result.style.color = '#F44336';
+        Sound.error();
+        showModal('😔 خسارة', `حظ أوفر المرة القادمة!<br><br>أنت: ${_attempts} محاولة<br>${opponent}: ${oppAttempts}`, [
+            { text: 'حسناً', class: 'cancel', action: () => { closeModal(); window._isBattle = false; navigateTo('home'); } }
+        ]);
+    }
+    updateUI();
+}
+
+function showRewards(res) {
+    let html = `
+        <div style="font-size:16px; font-weight:bold; color:#FFC107; margin:10px 0;">⚡ +${res.xp} XP</div>
+        <div style="font-size:14px; color:#FFC107;">💰 +${res.coins} عملة</div>
+    `;
+    if (_isDaily) html += `<div style="color:#FF9800; font-weight:bold; margin:8px 0;">📅 مكافأة ×2!</div>`;
+    if (res.levelUp) {
+        html += `<div style="color:#FF5722; font-weight:bold; margin:8px 0;">🌟 ترقية! المستوى ${XPSystem.getProfile().level}</div>`;
+        Sound.levelUp();
+    }
+    res.newBadges.forEach(b => {
+        html += `<div style="color:#FFC107; font-weight:bold; margin:5px 0;">${XPSystem.BADGES[b].icon} شارة: ${XPSystem.BADGES[b].name}</div>`;
+        Sound.badge();
+    });
+    showModal('🎉 أحسنت!', html, [
+        { text: 'متابعة', class: 'confirm', action: () => { closeModal(); navigateTo('home'); } }
+    ]);
+}
+
+/* ============================================================
+   20. نافذة منبثقة
+   ============================================================ */
+function showModal(title, body, buttons) {
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-body').innerHTML = body;
+    const btnContainer = document.getElementById('modal-buttons');
+    btnContainer.innerHTML = '';
+    buttons.forEach(btn => {
+        const b = document.createElement('button');
+        b.className = `modal-btn ${btn.class}`;
+        b.textContent = btn.text;
+        b.onclick = btn.action;
+        btnContainer.appendChild(b);
+    });
+    document.getElementById('modal').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+}
+
+/* ============================================================
+   21. إشعار
+   ============================================================ */
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ============================================================
+   22. التهيئة الأولية
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    XPSystem.checkDailyReset();
+    updateUI();
+    applyTheme();
+
+    // أزرار الشريط العلوي
+    document.getElementById('theme-btn').onclick = () => {
+        Sound.click();
+        Settings.set('theme', Settings.get('theme') === 'light' ? 'dark' : 'light');
+        updateUI();
+        applyTheme();
+    };
+
+    document.getElementById('sound-btn').onclick = () => {
+        Sound.enabled = !Sound.enabled;
+        if (Sound.enabled) Sound.init();
+        document.getElementById('sound-btn').textContent = Sound.enabled ? '🔊' : '🔇';
+        Settings.set('sound_enabled', Sound.enabled);
+        Sound.click();
+    };
+
+    document.getElementById('music-btn').onclick = () => {
+        Sound.click();
+        showToast('🎵 ضع ملفات MP3 في مجلد music لتشغيلها');
+    };
+
+    document.getElementById('profile-btn').onclick = () => navigateTo('profile');
+
+    // طلب الاسم عند أول استخدام
+    if (!localStorage.getItem('rainbow_hub_greeted')) {
+        setTimeout(() => {
+            showModal('👋 مرحباً!', 'أدخل اسمك للبدء:', [
+                { text: 'حفظ', class: 'confirm', action: () => {
+                    const name = prompt('اكتب اسمك:') || 'لاعب';
+                    Settings.setPlayerName(name);
+                    localStorage.setItem('rainbow_hub_greeted', '1');
+                    closeModal();
+                    updateUI();
+                    showToast(`مرحباً ${name}! 👋`);
+                }}
+            ]);
+        }, 500);
+    }
+
+    // تفعيل الصوت عند أول نقرة
+    document.body.addEventListener('click', () => Sound.init(), { once: true });
+});
+</script>
+
+</body>
+          </html>
